@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.22.2)
+
+PLATFORMS
+  x86_64-linux
+  x86_64-linux-musl
+
+DEPENDENCIES
+  minitest (~> 5.22, >= 5.22.2)
+
+RUBY VERSION
+   ruby 3.2.2p53
+
+BUNDLED WITH
+   2.4.10

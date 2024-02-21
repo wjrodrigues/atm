@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  atm_app:
+    image: ruby:3.2.2-alpine
+    container_name: atm_app
+    restart: always
+    tty: true
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: sh -c "bundle install && sh"
