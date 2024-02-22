@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../bin/cli'
+require './bin/cli'
 require 'json'
 
 RSpec.describe Bin::CLI do

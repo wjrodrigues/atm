@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/response'
-require_relative '../../lib/callable'
+require './lib/response'
+require './lib/callable'
 
 RSpec.describe Callable do
   class MockCallable < Callable

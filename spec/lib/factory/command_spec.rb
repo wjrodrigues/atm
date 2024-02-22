@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../../../lib/factory/command'
-require_relative '../../../lib/response'
+require './spec/spec_helper'
+require './lib/factory/command'
+require './lib/response'
 
 RSpec.describe Factory::Command do
   describe '#call' do
