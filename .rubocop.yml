@@ -4,6 +4,9 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+Style/TrivialAccessors:
+  Enabled: false
+
 Metrics/MethodLength:
   Max: 20
 
@@ -15,4 +18,3 @@ Lint/MissingSuper:
 
 Lint/ConstantDefinitionInBlock:
   Exclude: ["**/*_spec.rb"]
-
