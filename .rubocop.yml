@@ -9,3 +9,10 @@ Metrics/MethodLength:
 
 Metrics/BlockLength:
   Exclude: ["**/*_spec.rb"]
+
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Exclude: ["**/*_spec.rb"]
+
