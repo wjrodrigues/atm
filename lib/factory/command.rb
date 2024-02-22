@@ -15,21 +15,19 @@ module Factory
     def initialize(payload:)
       super(payload:)
 
-      return if payload.empty?
+      return if payload.nil?
 
       self.payload = payload
     end
 
     def call
-      return if payload.empty?
+      return if payload.nil?
 
-      key = payload.keys.first
-
-      action = ACTIONS.fetch(key, nil)
+      action = ACTIONS.fetch(payload.action.to_sym, nil)
 
       return response.add_error('invalid command') if action.nil?
 
-      response.add_result(action.call(payload))
+      action.call(payload:)
     end
   end
 end

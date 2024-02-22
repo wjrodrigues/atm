@@ -8,12 +8,9 @@ RSpec.describe Factory::Command do
   describe '#call' do
     context 'when there is a command to be make' do
       it 'calls provider command' do
-        payload = { caixa: {} }
-        provider = double('Commands::Provider')
+        payload = Struct.new(:action).new(action: 'caixa')
 
-        stub_const('Factory::Command::ACTIONS', { caixa: provider })
-
-        expect(provider).to receive(:call).with(payload)
+        expect_any_instance_of(Commands::Provider).to receive(:call).and_call_original
 
         response = described_class.call(payload:)
 
@@ -23,12 +20,9 @@ RSpec.describe Factory::Command do
 
     context 'when there is no command to be make' do
       it 'does not call the provider command' do
-        payload = { any: {} }
-        provider = double('Commands::Provider')
+        payload = Struct.new(:action).new(action: 'any')
 
-        stub_const('Factory::Command::ACTIONS', { caixa: provider })
-
-        expect(provider).not_to receive(:call)
+        expect_any_instance_of(Commands::Provider).not_to receive(:call)
 
         response = described_class.call(payload:)
 
