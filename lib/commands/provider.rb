@@ -19,9 +19,9 @@ module Commands
     end
 
     def call
-      unless available?
-        atm.availability!(false)
+      atm.availability!(payload[:availability])
 
+      if atm.availability
         summary_tmp = summary
 
         atm.add_error(ERROR_IN_USE)
@@ -40,8 +40,6 @@ module Commands
 
     private
 
-    def available? = payload[:availability] == true
-
     def summary
       return response.add_result(atm.summary) if atm.error?
 
@@ -49,7 +47,6 @@ module Commands
     end
 
     def update!
-      atm.availability!(true)
       atm.vault.update!(payload)
       atm.clear_error
     end
