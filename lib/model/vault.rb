@@ -15,10 +15,8 @@ class Vault
   end
 
   def update!(bills)
-    current = self.bills
-
     %i[ten twenty fifty hundred].each do |v|
-      self.bills[v] = bills.fetch(v, current[v])
+      self.bills[v] = bills[v] unless bills[v].nil?
     end
   end
 
