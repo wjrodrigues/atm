@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 require './bin/cli'
+require './lib/response'
+require './bin/display/cli'
+require './lib/dto/provider'
+
 require 'json'
 
-RSpec.describe Bin::CLI do
+RSpec.describe CLI do
   describe 'constants ' do
     it { expect(described_class::MSG_START).to eq("Digite 'fim' para sair, ou insira um comando") }
   end
@@ -11,64 +15,68 @@ RSpec.describe Bin::CLI do
   describe '#start ' do
     context "when input is 'fim'" do
       it 'ends program' do
-        kernel = double('kernel')
         factory = double('factory')
+        display = Display::CLI.new
 
-        expect(kernel).to receive(:puts).with(described_class::MSG_START)
-        expect(kernel).to receive(:gets).and_return('fim')
-        expect(kernel).to receive(:exit).and_return(true)
-        expect(kernel).not_to receive(:clear_screen)
+        expect(display).to receive(:write).with(described_class::MSG_START)
+        expect(display).to receive(:read).and_return('fim')
+        expect(display).to receive(:close).and_return(true)
+        expect(display).not_to receive(:clear)
         expect(factory).not_to receive(:call)
 
-        Bin::CLI.start(kernel:, factory:)
+        described_class.start(display:, factory:)
       end
     end
 
     context 'when command to end app' do
       it 'shows end of message app' do
-        kernel = double('kernel')
+        display = Display::CLI.new
         factory = double('factory')
 
-        expect(kernel).to receive(:puts).with(described_class::MSG_START).twice
-        expect(kernel).to receive(:gets).and_raise(Interrupt)
-        expect(kernel).to receive(:gets).and_return('fim')
-        expect(kernel).to receive(:clear_screen)
-        expect(kernel).to receive(:exit).and_return(true)
+        expect(display).to receive(:write).with(described_class::MSG_START).twice
+        expect(display).to receive(:read).and_raise(Interrupt)
+        expect(display).to receive(:clear)
+        expect(display).to receive(:read).and_return('fim')
+        expect(display).to receive(:close).and_return(true)
         expect(factory).not_to receive(:call)
 
-        Bin::CLI.start(kernel:, factory:)
+        described_class.start(display:, factory:)
       end
     end
 
     context 'when input is JSON valid' do
       it 'calls the application factory' do
-        kernel = double('kernel')
+        display = Display::CLI.new
         factory = double('factory')
+        response = Response.new(result: {})
+        presenter = Presenter::Provider.new(payload: {})
+
         raw_json = '{"name": "any"}'
 
-        expect(kernel).to receive(:puts).with(described_class::MSG_START)
-        expect(kernel).to receive(:gets).and_return(raw_json)
-        expect(kernel).to receive(:gets).and_return('fim')
-        expect(kernel).to receive(:exit).and_return(true)
-        expect(factory).to receive(:call).with(JSON.parse(raw_json))
+        expect(display).to receive(:write).with(described_class::MSG_START)
+        expect(display).to receive(:read).and_return(raw_json)
+        expect(factory).to receive(:call).with(payload: DTO::Provider::Structure).and_return(response)
+        expect(display).to receive(:write).with(presenter.summary(format: :json))
+        expect(display).to receive(:read).and_return('fim')
+        expect(display).to receive(:close).and_return(true)
 
-        Bin::CLI.start(kernel:, factory:)
+        CLI.start(display:, factory:)
       end
     end
 
     context 'when input is JSON invalid' do
       it 'shows message error' do
-        kernel = double('kernel')
+        display = Display::CLI.new
         factory = double('factory')
 
-        expect(kernel).to receive(:gets).and_return('')
-        expect(kernel).to receive(:gets).and_return('fim')
-        expect(kernel).to receive(:exit).and_return(true)
-        expect(kernel).to receive(:puts).with(described_class::MSG_START)
-        expect(kernel).to receive(:puts).with('Dados inválidos')
+        expect(display).to receive(:write).with(described_class::MSG_START)
+        expect(display).to receive(:read).and_return('')
+        expect(display).to receive(:write).with('Dados inválidos')
+        expect(display).to receive(:read).and_return('fim')
+        expect(display).to receive(:close).and_return(true)
         expect(factory).not_to receive(:call)
 
-        Bin::CLI.start(kernel:, factory:)
+        CLI.start(display:, factory:)
       end
     end
   end
