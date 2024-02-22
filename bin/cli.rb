@@ -6,8 +6,8 @@ require './bin/display/cli'
 require './lib/dto/provider'
 
 class CLI
-  OPEN = /[{"']/
-  CLOSE = /[}"']/
+  OPEN = /[{"]/
+  CLOSE = /[}"]/
   BREAK_LINE = "\n"
   END_APP = 'fim'
   MSG_START = "Digite 'fim' para sair, ou insira um comando"
