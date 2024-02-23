@@ -19,8 +19,6 @@ module Commands
     end
 
     def call
-      atm.availability!(payload[:availability])
-
       if atm.availability
         summary_tmp = summary
 

@@ -30,6 +30,7 @@ RSpec.describe Commands::Provider do
     context 'when it is available for use' do
       it 'does not update and returns summary with error' do
         atm = ATM.instance(create: true)
+        atm.update(payload: {}, availability: true)
 
         expected = {
           ten: 0,
@@ -49,6 +50,7 @@ RSpec.describe Commands::Provider do
 
       it 'returns summary with error if update many times' do
         atm = ATM.instance(create: true)
+        atm.update(payload: {}, availability: true)
 
         expected = {
           ten: 0,
@@ -83,7 +85,7 @@ RSpec.describe Commands::Provider do
           errors: []
         }
 
-        expect(atm).to receive(:availability!).and_raise('any')
+        expect(atm).to receive(:update).and_raise('any')
 
         response = described_class.call(payload: { twenty: 12, hundred: 13, availability: true }, atm:)
 
