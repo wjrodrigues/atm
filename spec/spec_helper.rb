@@ -15,6 +15,7 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'irb'
+require 'timecop'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -54,6 +55,13 @@ RSpec.configure do |config|
       add_filter '/spec/'
     end
   end
+
+  # https://github.com/travisjeffery/timecop
+  config.before do |example|
+    Timecop.freeze('2023-02-22T8:00:00-03:00') if example.metadata[:timecop]
+  end
+
+  config.after { Timecop.return }
 
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.
