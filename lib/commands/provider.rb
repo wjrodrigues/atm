@@ -19,11 +19,14 @@ module Commands
     end
 
     def call
+      atm.availability!(payload[:availability])
+
       if atm.availability
+        update! if atm.default
+
         summary_tmp = summary
 
         atm.add_error(ERROR_IN_USE)
-
         return summary_tmp
       end
 
@@ -45,7 +48,7 @@ module Commands
     end
 
     def update!
-      atm.update(payload:, availability: payload[:availability])
+      atm.update(payload:, availability: atm.availability)
       atm.clear_error
     end
   end

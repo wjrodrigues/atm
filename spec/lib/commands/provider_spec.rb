@@ -85,7 +85,7 @@ RSpec.describe Commands::Provider do
           errors: []
         }
 
-        expect(atm).to receive(:update).and_raise('any')
+        expect(atm).to receive(:availability!).and_raise('any')
 
         response = described_class.call(payload: { twenty: 12, hundred: 13, availability: true }, atm:)
 
