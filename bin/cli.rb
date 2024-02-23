@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'json'
-require './lib/presenter/provider'
+require './lib/presenter/provide'
 require './bin/display/cli'
-require './lib/dto/provider'
 
 class CLI
   OPEN = /[{"]/
@@ -15,17 +14,19 @@ class CLI
   private_constant :CLOSE, :OPEN, :BREAK_LINE, :END_APP
   private_class_method :new
 
-  def self.start(factory:, display: Display::CLI.new)
-    new(factory:, display:).start
+  def self.start(factory_command:, factory_dto:, factory_presenter:, display: Display::CLI.new)
+    new(factory_command:, factory_dto:, factory_presenter:, display:).start
   end
 
-  attr_accessor :display, :command, :factory
-  private :display=, :factory=
+  attr_accessor :display, :command, :factory_command, :factory_dto, :factory_presenter
+  private :display=, :factory_command=, :factory_dto=, :factory_presenter=
 
-  def initialize(display:, factory:)
+  def initialize(display:, factory_command:, factory_dto:, factory_presenter:)
     self.display = display
     self.command = ''
-    self.factory = factory
+    self.factory_command = factory_command
+    self.factory_dto = factory_dto
+    self.factory_presenter = factory_presenter
   end
 
   def start
@@ -55,11 +56,9 @@ class CLI
   private
 
   def response
-    provider = DTO::Provider.new(params: JSON.parse(self.command))
-
-    resp = factory.call(payload: provider.payload)
-
-    presenter = Presenter::Provider.new(payload: resp.result)
+    dto = build_dto!
+    command_resp = factory_command.call(payload: dto.payload)
+    presenter = factory_presenter.call(action: dto.payload.action, payload: command_resp.result)
 
     display.write(presenter.summary(format: :json))
   rescue JSON::ParserError, StandardError
@@ -73,5 +72,15 @@ class CLI
   def orientation
     clear_command
     display.write(MSG_START)
+  end
+
+  def build_dto!
+    json = JSON.parse(self.command)
+
+    dto = factory_dto.call(payload: json)
+
+    raise unless dto.ok?
+
+    dto.result
   end
 end
