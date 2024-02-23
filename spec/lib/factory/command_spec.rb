@@ -8,7 +8,7 @@ RSpec.describe Factory::Command do
   describe '#call' do
     context 'when there is a command to be make' do
       it 'calls provider command' do
-        payload = Struct.new(:action).new(action: 'caixa')
+        payload = Struct.new(:action).new(action: 'provide')
 
         expect_any_instance_of(Commands::Provider).to receive(:call).and_call_original
 
@@ -18,7 +18,7 @@ RSpec.describe Factory::Command do
       end
 
       it 'calls withdrawer command' do
-        payload = Struct.new(:action, :date_time, :value).new(action: 'saque', date_time: DateTime.now, value: 0)
+        payload = Struct.new(:action, :date_time, :value).new(action: 'withdraw', date_time: DateTime.now, value: 0)
 
         expect_any_instance_of(Commands::Withdrawer).to receive(:call).and_call_original
 
@@ -29,10 +29,11 @@ RSpec.describe Factory::Command do
     end
 
     context 'when there is no command to be make' do
-      it 'does not call the provider command' do
+      it 'does not call any factory command' do
         payload = Struct.new(:action).new(action: 'any')
 
         expect_any_instance_of(Commands::Provider).not_to receive(:call)
+        expect_any_instance_of(Commands::Withdrawer).not_to receive(:call)
 
         response = described_class.call(payload:)
 

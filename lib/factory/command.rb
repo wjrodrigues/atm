@@ -10,8 +10,8 @@ module Factory
     private :payload=
 
     ACTIONS = {
-      caixa: Commands::Provider,
-      saque: Commands::Withdrawer
+      provide: Commands::Provider,
+      withdraw: Commands::Withdrawer
     }.freeze
 
     def initialize(payload:)
