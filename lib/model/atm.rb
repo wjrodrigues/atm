@@ -61,12 +61,12 @@ class ATM
   end
 
   def operation_exists?(operation)
-    operation = operations.find do |o|
+    op = operations.find do |o|
       next if operation.value != o.value
 
-      (operation.date_time.to_time.to_i - o.date_time.to_time.to_i).abs > MIN_OPERATION_INTERVAL
+      (operation.date_time.to_time.to_i - o.date_time.to_time.to_i).abs < MIN_OPERATION_INTERVAL
     end
 
-    !operation.nil?
+    !op.nil?
   end
 end

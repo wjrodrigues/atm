@@ -147,24 +147,24 @@ RSpec.describe ATM do
 
   describe '#operation_exists?' do
     context 'when verify operation exists' do
-      it 'returns true if timeout has passed', :timecop do
+      it 'returns false if passed 10 minutes', :timecop do
         date_time = DateTime.parse('2023-02-22T08:11:00 -0300')
         operation = Operation.new(kind: Operation::WITHDRAW, value: 30, date_time:)
         instance = described_class.instance(create: true)
 
         instance.add_operation(Operation.new(kind: Operation::WITHDRAW, value: 30, date_time: Time.now))
 
-        expect(instance.operation_exists?(operation)).to be_truthy
+        expect(instance.operation_exists?(operation)).to be_falsy
       end
 
-      it 'returns false if timeout has not passed', :timecop do
+      it 'returns true if not passed 10 minutes', :timecop do
         date_time = DateTime.parse('2023-02-22T08:09:00 -0300')
         operation = Operation.new(kind: Operation::WITHDRAW, value: 30, date_time:)
         instance = described_class.instance(create: true)
 
         instance.add_operation(Operation.new(kind: Operation::WITHDRAW, value: 30, date_time: Time.now))
 
-        expect(instance.operation_exists?(operation)).to be_falsy
+        expect(instance.operation_exists?(operation)).to be_truthy
       end
 
       it 'returns false if value is different', :timecop do
