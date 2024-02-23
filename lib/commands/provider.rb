@@ -47,7 +47,7 @@ module Commands
     end
 
     def update!
-      atm.vault.update!(payload)
+      atm.update(payload:, availability: payload[:availability])
       atm.clear_error
     end
   end
