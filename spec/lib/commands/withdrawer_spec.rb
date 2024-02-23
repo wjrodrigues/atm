@@ -190,5 +190,26 @@ RSpec.describe Commands::Withdrawer do
         expect(response.result).to eq(expected)
       end
     end
+
+    context 'when raise error' do
+      it 'returns summary' do
+        atm = ATM.instance(create: true)
+
+        expected = {
+          ten: 0,
+          twenty: 0,
+          fifty: 0,
+          hundred: 0,
+          availability: false,
+          errors: []
+        }
+
+        expect(atm).to receive(:clear_error).and_raise('any')
+
+        response = described_class.call(payload: { twenty: 12, hundred: 13, availability: true }, atm:)
+
+        expect(response.result).to eq(expected)
+      end
+    end
   end
 end

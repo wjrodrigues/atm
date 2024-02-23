@@ -27,6 +27,7 @@ module Commands
 
     def call
       clear_errors
+
       return atm_not_exists! if atm.default
       return summary unless authorized?
 
@@ -36,6 +37,10 @@ module Commands
       return unavailable_value! unless updated_summary
 
       update(updated_summary)
+
+      summary
+    rescue StandardError
+      # TODO: add error tracking if needed
 
       summary
     end
