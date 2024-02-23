@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../commands/provider'
+require_relative '../commands/withdrawer'
 require_relative '../callable'
 
 module Factory
@@ -9,7 +10,8 @@ module Factory
     private :payload=
 
     ACTIONS = {
-      caixa: Commands::Provider
+      caixa: Commands::Provider,
+      saque: Commands::Withdrawer
     }.freeze
 
     def initialize(payload:)

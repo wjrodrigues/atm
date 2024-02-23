@@ -16,6 +16,16 @@ RSpec.describe Factory::Command do
 
         expect(response).to be_instance_of(Response)
       end
+
+      it 'calls withdrawer command' do
+        payload = Struct.new(:action, :date_time, :value).new(action: 'saque', date_time: DateTime.now, value: 0)
+
+        expect_any_instance_of(Commands::Withdrawer).to receive(:call).and_call_original
+
+        response = described_class.call(payload:)
+
+        expect(response).to be_instance_of(Response)
+      end
     end
 
     context 'when there is no command to be make' do
