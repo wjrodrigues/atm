@@ -2,6 +2,9 @@
 
 require './spec/spec_helper'
 require './lib/model/atm'
+require './lib/model/operation'
+
+require 'date'
 
 RSpec.describe ATM do
   describe '#instance' do
@@ -49,6 +52,16 @@ RSpec.describe ATM do
         instance.update(payload: { ten: 1, hundred: 3 }, availability: true)
 
         expect(instance.summary).to eq(expected)
+      end
+
+      it 'verifies is default instance' do
+        instance = described_class.instance(create: true)
+
+        expect(instance.default).to be_truthy
+
+        instance.update(payload: { ten: 1, hundred: 3 }, availability: true)
+
+        expect(instance.default).to be_falsy
       end
     end
   end
@@ -106,6 +119,61 @@ RSpec.describe ATM do
 
         instance.availability!('false')
         instance.availability!(nil)
+      end
+    end
+  end
+
+  describe '#add_operation' do
+    context 'when adding valid operation' do
+      it 'adds operation' do
+        operation = Operation.new(kind: Operation::WITHDRAW, value: 30, date_time: DateTime.now)
+        instance = described_class.instance(create: true)
+        instance.add_operation(operation)
+
+        expect(instance.operations).to be_include(operation)
+      end
+    end
+
+    context 'when adding invalid operation' do
+      it 'does not add operation' do
+        operation = Object.new
+        instance = described_class.instance(create: true)
+
+        expect(instance.add_operation(operation)).to be_falsy
+        expect(instance.operations).not_to be_include(operation)
+      end
+    end
+  end
+
+  describe '#operation_exists?' do
+    context 'when verify operation exists' do
+      it 'returns true if timeout has passed', :timecop do
+        date_time = DateTime.parse('2023-02-22T08:11:00 -0300')
+        operation = Operation.new(kind: Operation::WITHDRAW, value: 30, date_time:)
+        instance = described_class.instance(create: true)
+
+        instance.add_operation(Operation.new(kind: Operation::WITHDRAW, value: 30, date_time: Time.now))
+
+        expect(instance.operation_exists?(operation)).to be_truthy
+      end
+
+      it 'returns false if timeout has not passed', :timecop do
+        date_time = DateTime.parse('2023-02-22T08:09:00 -0300')
+        operation = Operation.new(kind: Operation::WITHDRAW, value: 30, date_time:)
+        instance = described_class.instance(create: true)
+
+        instance.add_operation(Operation.new(kind: Operation::WITHDRAW, value: 30, date_time: Time.now))
+
+        expect(instance.operation_exists?(operation)).to be_falsy
+      end
+
+      it 'returns false if value is different', :timecop do
+        operation = Operation.new(kind: Operation::WITHDRAW, value: 30, date_time: DateTime.now)
+        instance = described_class.instance(create: true)
+
+        instance.add_operation(Operation.new(kind: Operation::WITHDRAW, value: 50, date_time: DateTime.now))
+
+        expect(instance.operation_exists?(operation)).to be_falsy
       end
     end
   end
