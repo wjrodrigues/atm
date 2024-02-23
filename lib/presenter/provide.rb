@@ -3,7 +3,7 @@
 require 'json'
 
 module Presenter
-  class Provider
+  class Provide
     attr_accessor :payload
 
     def initialize(payload:)

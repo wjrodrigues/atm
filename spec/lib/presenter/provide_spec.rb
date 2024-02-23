@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require './spec/spec_helper'
-require './lib/presenter/provider'
+require './lib/presenter/provide'
 require 'json'
 
-RSpec.describe Presenter::Provider do
+RSpec.describe Presenter::Provide do
   describe '#summary' do
     context 'when summary is requested' do
       it 'returns formatted summary' do
