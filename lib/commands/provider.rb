@@ -43,7 +43,7 @@ module Commands
     end
 
     def summary
-      return response.add_result(atm.summary) if atm.error?
+      return response.add_result(atm.summary.merge(errors: [ERROR_IN_USE])) if atm.error?
 
       response.add_result(atm.summary.merge(errors: []))
     end
