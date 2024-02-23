@@ -9,10 +9,14 @@ module Commands
 
     private :operation=, :operation
 
-    ERROR_ATM_NOT_EXISTS = 'caixa-inexistente'
-    ERROR_ATM_UNAVAILABLE = 'caixa-indisponivel'
-    ERROR_UNAVAILABLE_VALUE = 'valor-indisponivel'
-    ERROR_WITHDRAW_DUPLICATED = 'saque-duplicado'
+    ERROR = {
+      atm_not_exists: 'caixa-inexistente',
+      atm_unavailable: 'caixa-indisponivel',
+      unavailable_value: 'valor-indisponivel',
+      withdraw_duplicated: 'saque-duplicado'
+    }.freeze
+
+    private_constant :ERROR
 
     def initialize(payload:, atm: ATM.instance)
       super(payload:)
@@ -22,6 +26,7 @@ module Commands
     end
 
     def call
+      clear_errors
       return atm_not_exists! if atm.default
       return summary unless authorized?
 
@@ -37,6 +42,8 @@ module Commands
 
     private
 
+    def clear_errors = atm.clear_error
+
     def authorized?
       return atm_unavailable! && false unless atm.availability
       return withdraw_duplicated! && false if atm.operation_exists?(new_operation)
@@ -45,26 +52,26 @@ module Commands
     end
 
     def atm_not_exists!
-      atm.add_error(ERROR_ATM_NOT_EXISTS)
+      atm.add_error(ERROR[:atm_not_exists])
 
       result = summary.result.slice(:errors)
       summary.add_result(result)
     end
 
     def unavailable_value!
-      atm.add_error(ERROR_UNAVAILABLE_VALUE)
+      atm.add_error(ERROR[:unavailable_value])
 
       summary
     end
 
     def atm_unavailable!
-      atm.add_error(ERROR_ATM_UNAVAILABLE)
+      atm.add_error(ERROR[:atm_unavailable])
 
       summary
     end
 
     def withdraw_duplicated!
-      atm.add_error(ERROR_WITHDRAW_DUPLICATED)
+      atm.add_error(ERROR[:withdraw_duplicated])
 
       summary
     end
@@ -77,11 +84,9 @@ module Commands
 
     def calculate(vault_summary, value)
       %i[hundred fifty twenty ten].each do |key|
-        next if vault_summary[key].zero? || value <= vault_summary[key]
+        next if vault_summary[key].zero?
 
         rest = value % Vault::INDEX[key]
-
-        next if rest == value
 
         subtract = value / Vault::INDEX[key]
 
