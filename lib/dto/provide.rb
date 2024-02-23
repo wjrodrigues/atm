@@ -15,15 +15,15 @@ module DTO
     def make(params)
       values = params['caixa'] || {}
 
-      bills = values['notas'] || {}
+      notes = values['notas'] || {}
 
       self.payload = Structure.new(
         action: 'provide',
         availability: values.fetch('caixaDisponivel', false),
-        ten: bills.fetch('notasDez', 0),
-        twenty: bills.fetch('notasVinte', 0),
-        fifty: bills.fetch('notasCinquenta', 0),
-        hundred: bills.fetch('notasCem', 0)
+        ten: notes.fetch('notasDez', 0),
+        twenty: notes.fetch('notasVinte', 0),
+        fifty: notes.fetch('notasCinquenta', 0),
+        hundred: notes.fetch('notasCem', 0)
       )
     end
   end
