@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../presenter/provide'
-require_relative '../presenter/withdraw'
-require_relative '../callable'
+require './lib/presenter/provide'
+require './lib/presenter/withdraw'
+require './lib/callable'
 
 module Factory
   class Presenter < Callable

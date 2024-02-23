@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/response'
+require './lib/response'
 
 RSpec.describe Response do
   describe '#ok?' do

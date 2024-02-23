@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../commands/provider'
-require_relative '../commands/withdrawer'
-require_relative '../callable'
+require './lib/commands/provider'
+require './lib/commands/withdrawer'
+require './lib/callable'
 
 module Factory
   class Command < Callable

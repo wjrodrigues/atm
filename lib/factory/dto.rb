@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../dto/provide'
-require_relative '../dto/withdraw'
-require_relative '../callable'
+require './lib/dto/provide'
+require './lib/dto/withdraw'
+require './lib/callable'
 
 module Factory
   class DTO < Callable
