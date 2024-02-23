@@ -47,6 +47,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
+    timecop (0.9.8)
     unicode-display_width (2.5.0)
 
 PLATFORMS
@@ -57,6 +58,7 @@ DEPENDENCIES
   rspec (~> 3.13)
   rubocop (~> 1.60, >= 1.60.2)
   simplecov (~> 0.22.0)
+  timecop (~> 0.9.8)
 
 RUBY VERSION
    ruby 3.2.2p53

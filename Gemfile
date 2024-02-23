@@ -13,4 +13,7 @@ group :development, :test do
 
   # https://github.com/rubocop/rubocop
   gem 'rubocop', '~> 1.60', '>= 1.60.2'
+
+  # https://github.com/travisjeffery/timecop
+  gem 'timecop', '~> 0.9.8'
 end
