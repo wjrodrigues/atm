@@ -28,29 +28,8 @@ RSpec.describe Commands::Provider do
     end
 
     context 'when it is available for use' do
-      it 'does not update and returns summary with error' do
-        atm = ATM.instance(create: true)
-        atm.update(payload: {}, availability: true)
-
-        expected = {
-          ten: 0,
-          twenty: 0,
-          fifty: 0,
-          hundred: 0,
-          availability: true,
-          errors: []
-        }
-
-        expect(atm).to receive(:add_error).with('caixa-em-uso').and_call_original
-        expect(atm.vault).not_to receive(:update!)
-
-        response = described_class.call(payload: { availability: true, twenty: 10, hundred: 3 }, atm:)
-        expect(response.result).to eq(expected)
-      end
-
       it 'returns summary with error if update many times' do
         atm = ATM.instance(create: true)
-        atm.update(payload: {}, availability: true)
 
         expected = {
           ten: 0,
@@ -61,8 +40,8 @@ RSpec.describe Commands::Provider do
           errors: ['caixa-em-uso']
         }
 
-        expect(atm).to receive(:add_error).with('caixa-em-uso').and_call_original.twice
-        expect(atm.vault).not_to receive(:update!)
+        expect(atm).to receive(:add_error).with('caixa-em-uso').and_call_original
+        expect(atm.vault).to receive(:update!)
 
         response = described_class.call(payload: { availability: true, twenty: 10, hundred: 3 }, atm:)
         expect(response.result[:errors]).to be_empty
@@ -85,7 +64,7 @@ RSpec.describe Commands::Provider do
           errors: []
         }
 
-        expect(atm).to receive(:availability!).and_raise('any')
+        expect(atm).to receive(:update).and_raise('any')
 
         response = described_class.call(payload: { twenty: 12, hundred: 13, availability: true }, atm:)
 

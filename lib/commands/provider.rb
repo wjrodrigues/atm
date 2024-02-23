@@ -19,18 +19,11 @@ module Commands
     end
 
     def call
-      atm.availability!(payload[:availability])
+      return update_unavailability unless atm.availability
 
-      if atm.availability
-        update! if atm.default
+      atm.add_error(ERROR_IN_USE) if atm.availability
 
-        summary_tmp = summary
-
-        atm.add_error(ERROR_IN_USE)
-        return summary_tmp
-      end
-
-      update!
+      return update_unavailability(clear: true) unless payload[:availability]
 
       summary
     rescue StandardError
@@ -41,6 +34,14 @@ module Commands
 
     private
 
+    def update_unavailability(clear: false)
+      atm.clear_error if clear
+
+      update!
+
+      summary
+    end
+
     def summary
       return response.add_result(atm.summary) if atm.error?
 
@@ -48,7 +49,7 @@ module Commands
     end
 
     def update!
-      atm.update(payload:, availability: atm.availability)
+      atm.update(payload:, availability: payload[:availability])
       atm.clear_error
     end
   end
