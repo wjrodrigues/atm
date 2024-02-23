@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DTO
-  class Provider
+  class Provide
     attr_accessor :payload
 
     Structure = Struct.new(:action, :availability, :ten, :twenty, :fifty, :hundred, keyword_init: true)
@@ -18,7 +18,7 @@ module DTO
       bills = values['notas'] || {}
 
       self.payload = Structure.new(
-        action: 'caixa',
+        action: 'provide',
         availability: values.fetch('caixaDisponivel', false),
         ten: bills.fetch('notasDez', 0),
         twenty: bills.fetch('notasVinte', 0),

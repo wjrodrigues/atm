@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require './spec/spec_helper'
-require './lib/dto/provider'
+require './lib/dto/provide'
 
 require 'json'
 
-RSpec.describe DTO::Provider do
+RSpec.describe DTO::Provide do
   describe '#payload' do
     context 'when param is valid' do
       it 'returns hash' do
-        expected = { action: 'caixa', ten: 5, twenty: 5, fifty: 5, hundred: 5, availability: false }
+        expected = { action: 'provide', ten: 5, twenty: 5, fifty: 5, hundred: 5, availability: false }
 
         params = {
           caixa: {
@@ -23,15 +23,15 @@ RSpec.describe DTO::Provider do
           }
         }.to_json
 
-        provider = described_class.new(params: JSON.parse(params))
+        provide = described_class.new(params: JSON.parse(params))
 
-        expect(provider.payload.to_h).to eq(expected)
+        expect(provide.payload.to_h).to eq(expected)
       end
     end
 
     context 'when param is invalid' do
       it 'returns hash with default values' do
-        expected = { action: 'caixa', ten: 0, twenty: 0, fifty: 0, hundred: 0, availability: false }
+        expected = { action: 'provide', ten: 0, twenty: 0, fifty: 0, hundred: 0, availability: false }
 
         params = {
           caixaDisponivel: false,
@@ -43,9 +43,9 @@ RSpec.describe DTO::Provider do
           }
         }.to_json
 
-        provider = described_class.new(params: JSON.parse(params))
+        provide = described_class.new(params: JSON.parse(params))
 
-        expect(provider.payload.to_h).to eq(expected)
+        expect(provide.payload.to_h).to eq(expected)
       end
     end
   end
