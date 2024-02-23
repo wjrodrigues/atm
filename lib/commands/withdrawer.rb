@@ -10,8 +10,8 @@ module Commands
     private :operation=, :operation
 
     ERROR_ATM_NOT_EXISTS = 'caixa-inexistente'
-    ERROR_UNAVAILABLE_VALUE = 'valor-indisponivel'
     ERROR_ATM_UNAVAILABLE = 'caixa-indisponivel'
+    ERROR_UNAVAILABLE_VALUE = 'valor-indisponivel'
     ERROR_WITHDRAW_DUPLICATED = 'saque-duplicado'
 
     def initialize(payload:, atm: ATM.instance)
@@ -22,13 +22,13 @@ module Commands
     end
 
     def call
-      return atm_not_exists if atm.default
+      return atm_not_exists! if atm.default
       return summary unless authorized?
 
       vault_summary = atm.summary
       updated_summary = calculate(vault_summary, payload[:value])
 
-      return unavailable_value unless updated_summary
+      return unavailable_value! unless updated_summary
 
       update(updated_summary)
 
@@ -38,34 +38,32 @@ module Commands
     private
 
     def authorized?
-      return atm_unavailable && false unless atm.availability
-
-      binding.irb
-      withdraw_duplicated && false if atm.operation_exists?(new_operation)
+      return atm_unavailable! && false unless atm.availability
+      return withdraw_duplicated! && false if atm.operation_exists?(new_operation)
 
       true
     end
 
-    def atm_not_exists
+    def atm_not_exists!
       atm.add_error(ERROR_ATM_NOT_EXISTS)
 
       result = summary.result.slice(:errors)
       summary.add_result(result)
     end
 
-    def unavailable_value
+    def unavailable_value!
       atm.add_error(ERROR_UNAVAILABLE_VALUE)
 
       summary
     end
 
-    def atm_unavailable
+    def atm_unavailable!
       atm.add_error(ERROR_ATM_UNAVAILABLE)
 
       summary
     end
 
-    def withdraw_duplicated
+    def withdraw_duplicated!
       atm.add_error(ERROR_WITHDRAW_DUPLICATED)
 
       summary

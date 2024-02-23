@@ -130,6 +130,26 @@ RSpec.describe Commands::Withdrawer do
       end
     end
 
+    context 'when value has invalid decimal' do
+      it 'returns summary with error', :timecop do
+        atm = ATM.instance(create: true)
+        atm.update(payload: { ten: 1, twenty: 1, fifty: 1, hundred: 3 }, availability: true)
+
+        expected = {
+          ten: 1,
+          twenty: 1,
+          fifty: 1,
+          hundred: 3,
+          availability: true,
+          errors: ['valor-indisponivel']
+        }
+
+        response = described_class.call(payload: { date_time: DateTime.now, value: 105 }, atm:)
+
+        expect(response.result).to eq(expected)
+      end
+    end
+
     context 'when ATM is not available' do
       it 'returns summary with error', :timecop do
         atm = ATM.instance(create: true)
@@ -163,7 +183,7 @@ RSpec.describe Commands::Withdrawer do
           availability: true,
           errors: ['saque-duplicado']
         }
-        aki
+
         described_class.call(payload: { date_time: DateTime.now, value: 30 }, atm:)
         response = described_class.call(payload: { date_time: DateTime.now, value: 30 }, atm:)
 
